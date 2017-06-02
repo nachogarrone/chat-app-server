@@ -29,23 +29,23 @@ public class FileController {
     private FileService fileService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> saveFile(@RequestParam("file") MultipartFile uploadfile) {
+    public ResponseEntity<?> saveFile(String username, @RequestParam("file") MultipartFile uploadfile) {
         if (uploadfile.isEmpty()) {
             return new ResponseEntity("please select a file!", HttpStatus.OK);
         }
 
         try {
-            fileService.saveFile(uploadfile.getName(), uploadfile.getInputStream());
+            String id = fileService.saveFile(username, uploadfile);
+            return new ResponseEntity(id, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return new ResponseEntity("File uploaded!", HttpStatus.OK);
+        return new ResponseEntity("Failed to save file.", HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<?> getFile(String id) {
-        //String id = "5602de6e5d8bba0d6f2e45e4";
         GridFSDBFile file = null;
         try {
             file = fileService.getFile(id);
@@ -53,7 +53,14 @@ public class FileController {
             e.printStackTrace();
         }
         if (file != null) {
-            return new ResponseEntity(file.getInputStream(), HttpStatus.OK);
+            try {
+
+                final HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.IMAGE_PNG);
+                return new ResponseEntity(IOUtils.toByteArray(file.getInputStream()), headers, HttpStatus.OK);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return new ResponseEntity("File not found", HttpStatus.OK);
     }

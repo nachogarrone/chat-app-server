@@ -1,13 +1,15 @@
 package com.sd.chat.services;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.sd.chat.MongoConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -18,9 +20,10 @@ public class FileService {
     @Autowired
     private MongoConfig mongoConfig;
 
-    public boolean saveFile(String name, InputStream file) throws Exception {
-        mongoConfig.gridFsTemplate().store(file, name, "image/png", null).getId().toString();
-        return true;
+    public String saveFile(String username, MultipartFile file) throws Exception {
+        DBObject metaData = new BasicDBObject();
+        metaData.put("user", username);
+        return mongoConfig.gridFsTemplate().store(file.getInputStream(), file.getName(), "image/png", metaData).getId().toString();
     }
 
     public GridFSDBFile getFile(String id) throws Exception {
