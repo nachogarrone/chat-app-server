@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by nachogarrone on 6/1/17.
@@ -28,7 +26,7 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<?> saveFile(String username, @RequestParam("file") MultipartFile uploadfile) {
         if (uploadfile.isEmpty()) {
             return new ResponseEntity("please select a file!", HttpStatus.OK);
@@ -61,30 +59,6 @@ public class FileController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        return new ResponseEntity("File not found", HttpStatus.OK);
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<?> getFiles() {
-        List<GridFSDBFile> files = null;
-        try {
-            files = fileService.getFiles();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (files != null) {
-            List<byte[]> streams = new ArrayList<>();
-            for (GridFSDBFile gr : files) {
-                try {
-                    streams.add(IOUtils.toByteArray(gr.getInputStream()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            final HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_PNG);
-            return new ResponseEntity(streams, headers, HttpStatus.OK);
         }
         return new ResponseEntity("File not found", HttpStatus.OK);
     }
