@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.sd.chat</OriginalElement>
+  <nodes>
+    <node x="38.5" y="0.0">com.sd.chat.MongoConfig</node>
+    <node x="0.0" y="268.0">com.sd.chat.controllers.FileController</node>
+    <node x="91.0" y="388.0">com.sd.chat.ChatApplication</node>
+    <node x="41.0" y="145.0">com.sd.chat.services.FileService</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="195.0" y="219.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

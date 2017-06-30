@@ -10,8 +10,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 /**
  * Created by nachogarrone on 6/1/17.
  */
@@ -28,9 +26,5 @@ public class FileService {
 
     public GridFSDBFile getFile(String id) throws Exception {
         return mongoConfig.gridFsTemplate().findOne(new Query(Criteria.where("_id").is(id)));
-    }
-
-    public List<GridFSDBFile> getFiles() throws Exception {
-        return mongoConfig.gridFsTemplate().find(null);
     }
 }
