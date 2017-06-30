@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,21 +30,21 @@ public class FileController {
     @PostMapping
     public ResponseEntity<?> saveFile(String username, @RequestParam("file") MultipartFile uploadfile) {
         if (uploadfile.isEmpty()) {
-            return new ResponseEntity("please select a file!", HttpStatus.OK);
+            return ResponseEntity.badRequest().body("Please select a file.");
         }
 
         try {
             String id = fileService.saveFile(username, uploadfile);
-            return new ResponseEntity(id, HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.CREATED).body(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return new ResponseEntity("Failed to save file.", HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save file.");
     }
 
-    @GetMapping
-    public ResponseEntity<?> getFile(String id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getFile(@PathVariable String id) {
         GridFSDBFile file = null;
         try {
             file = fileService.getFile(id);
@@ -52,7 +53,6 @@ public class FileController {
         }
         if (file != null) {
             try {
-
                 final HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.IMAGE_PNG);
                 return new ResponseEntity(IOUtils.toByteArray(file.getInputStream()), headers, HttpStatus.OK);
@@ -60,6 +60,6 @@ public class FileController {
                 e.printStackTrace();
             }
         }
-        return new ResponseEntity("File not found", HttpStatus.OK);
+        return ResponseEntity.notFound().build();
     }
 }
